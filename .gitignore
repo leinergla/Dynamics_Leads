@@ -1,0 +1,41 @@
+# Carpetas de compilación .NET
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+
+# Archivos de usuario / build
+*.user
+project.lock.json
+*.nupkg
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# Variables de entorno (mantener .env.example)
+.env
+.env.*
+!.env.example
+
+# Frontend (React / Vite)
+node_modules/
+frontend/dist/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos subidos por la API
+Archivos/
+
+# Secretos / certificados
+appsettings.*.local.json
+*.pfx
+secrets.json
+
+# Sistema operativo
+Thumbs.db
+Desktop.ini
+.DS_Store
