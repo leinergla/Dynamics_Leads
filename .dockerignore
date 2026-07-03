@@ -1,0 +1,23 @@
+# Salidas de compilación
+**/bin/
+**/obj/
+**/out/
+
+# Frontend (no forma parte de la imagen del API)
+frontend/
+
+# Control de versiones / IDE
+.git/
+.gitignore
+.vs/
+.vscode/
+.idea/
+
+# Documentación y scripts auxiliares
+**/*.md
+db/
+postman/
+
+# Configuración local (no debe entrar a la imagen)
+**/appsettings.Development.json
+**/*.user

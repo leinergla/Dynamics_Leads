@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Dynamics_Leads.Api/Dynamics_Leads.Api.csproj" />
+    <Project Path="src/Dynamics_Leads.Application/Dynamics_Leads.Application.csproj" />
+    <Project Path="src/Dynamics_Leads.Domain/Dynamics_Leads.Domain.csproj" />
+    <Project Path="src/Dynamics_Leads.Infrastructure/Dynamics_Leads.Infrastructure.csproj" />
+  </Folder>
+</Solution>

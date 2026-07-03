@@ -1,0 +1,362 @@
+{
+  "info": {
+    "name": "Dynamics Leads API",
+    "description": "Colección para la API de leads (.NET 10).\n\nVariables: baseUrl, username, password, leadId, archivoId, formulario, usuarioId, rolId.\n\nLa API autentica con un JWT en una cookie httpOnly. Postman guarda y reenvía la cookie automáticamente por dominio, así que el flujo es:\n\n1) Auth > Login (guarda la cookie de sesión).\n2) Roles y Usuarios > requieren el permiso usuarios.manage (rol Administrador).\n3) Leads > requieren leads.read/create/update/delete.\n\nFlujo de datos sugerido: Login -> Crear lead (guarda leadId) -> Archivos del lead (guarda archivoId) -> resto de operaciones. Roles > Listar guarda el primer rolId para crear usuarios.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5137", "type": "string" },
+    { "key": "username", "value": "admin", "type": "string" },
+    { "key": "password", "value": "Admin123*", "type": "string" },
+    { "key": "leadId", "value": "f0f69b91-7965-4628-9e1e-3b412e32a751", "type": "string" },
+    { "key": "archivoId", "value": "2b2d440b-abe5-4850-aa7d-87229d089c2e", "type": "string" },
+    { "key": "formulario", "value": "contacto", "type": "string" },
+    { "key": "usuarioId", "value": "", "type": "string" },
+    { "key": "rolId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "description": "Autenticación por cookie httpOnly. Ejecuta Login primero; Postman conserva la cookie para el resto de peticiones.",
+      "item": [
+        {
+          "name": "Login (POST)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.usuario && json.usuario.id) {",
+                  "    pm.collectionVariables.set('usuarioId', json.usuario.id);",
+                  "  }",
+                  "  console.log('Sesión iniciada. La cookie httpOnly quedó almacenada por Postman.');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": [ "{{baseUrl}}" ], "path": [ "api", "auth", "login" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "description": "Valida credenciales y deja el JWT en una cookie httpOnly. Responde 200 con { usuario, permisos } o 401."
+          }
+        },
+        {
+          "name": "Usuario actual (GET me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/auth/me", "host": [ "{{baseUrl}}" ], "path": [ "api", "auth", "me" ] },
+            "description": "Devuelve el usuario autenticado, su rol y permisos. 401 sin sesión."
+          }
+        },
+        {
+          "name": "Logout (POST)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/auth/logout", "host": [ "{{baseUrl}}" ], "path": [ "api", "auth", "logout" ] },
+            "description": "Elimina la cookie de autenticación. Responde 204."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios y Roles",
+      "description": "Gestión de usuarios y roles. Requiere el permiso usuarios.manage (rol Administrador).",
+      "item": [
+        {
+          "name": "Listar roles (GET)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const arr = pm.response.json();",
+                  "  if (Array.isArray(arr) && arr.length > 0) {",
+                  "    pm.collectionVariables.set('rolId', arr[0].id);",
+                  "    console.log('rolId guardado:', arr[0].id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/roles", "host": [ "{{baseUrl}}" ], "path": [ "api", "roles" ] },
+            "description": "Lista los roles disponibles. Guarda el primer rolId (útil para crear usuarios)."
+          }
+        },
+        {
+          "name": "Listar usuarios (GET, paginación)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios?page=1&pageSize=10",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "usuarios" ],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "10" }
+              ]
+            },
+            "description": "Lista paginada de usuarios (orden por username). Devuelve PagedResult: { items, page, pageSize, total, totalPages }. Defaults: page=1, pageSize=10 (el servidor limita pageSize a 1..100)."
+          }
+        },
+        {
+          "name": "Detalle usuario (GET por id)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/usuarios/{{usuarioId}}", "host": [ "{{baseUrl}}" ], "path": [ "api", "usuarios", "{{usuarioId}}" ] },
+            "description": "Devuelve un usuario por su id. 404 si no existe."
+          }
+        },
+        {
+          "name": "Crear usuario (POST)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.id) {",
+                  "    pm.collectionVariables.set('usuarioId', json.id);",
+                  "    console.log('usuarioId guardado:', json.id);",
+                  "  }",
+                  "}",
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/usuarios", "host": [ "{{baseUrl}}" ], "path": [ "api", "usuarios" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"editor1\",\n  \"email\": \"editor1@demo.com\",\n  \"password\": \"Editor123*\",\n  \"rolId\": \"{{rolId}}\"\n}"
+            },
+            "description": "Crea un usuario. Requiere rolId (ejecuta antes 'Listar roles'). Responde 201 con el usuario creado."
+          }
+        },
+        {
+          "name": "Actualizar usuario (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/usuarios/{{usuarioId}}", "host": [ "{{baseUrl}}" ], "path": [ "api", "usuarios", "{{usuarioId}}" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"editor1.editado@demo.com\",\n  \"rolId\": \"{{rolId}}\",\n  \"activo\": true\n}"
+            },
+            "description": "Actualiza email, rol y estado del usuario. NO cambia la contraseña (usa el endpoint 'Cambiar contraseña'). 204 / 404."
+          }
+        },
+        {
+          "name": "Cambiar contraseña (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/usuarios/{{usuarioId}}/password", "host": [ "{{baseUrl}}" ], "path": [ "api", "usuarios", "{{usuarioId}}", "password" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"NuevaClave123*\"\n}"
+            },
+            "description": "Restablece la contraseña de OTRO usuario (mín. 6 caracteres). Requiere usuarios.manage (rol Administrador). No puedes cambiar tu propia contraseña por esta vía: si {{usuarioId}} es el usuario en sesión responde 400. 204 / 400 / 404."
+          }
+        },
+        {
+          "name": "Eliminar usuario (DELETE)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/usuarios/{{usuarioId}}", "host": [ "{{baseUrl}}" ], "path": [ "api", "usuarios", "{{usuarioId}}" ] },
+            "description": "Elimina un usuario. 204 / 404."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Leads",
+      "description": "Gestión de leads. Requiere sesión iniciada y el permiso correspondiente (leads.read/create/update/delete).",
+      "item": [
+        {
+          "name": "Crear lead (POST)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.leadId) {",
+                  "    pm.collectionVariables.set('leadId', json.leadId);",
+                  "    console.log('leadId guardado:', json.leadId);",
+                  "  }",
+                  "}",
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/Leads", "host": [ "{{baseUrl}}" ], "path": [ "api", "Leads" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"formulario\": \"contacto\",\n  \"datos\": [\n    { \"nombre\": \"nombre\", \"valor\": \"Leiner Gomez\", \"orden\": 1, \"alias\": \"nombre_completo\" },\n    { \"nombre\": \"email\", \"valor\": \"leinergla@gmail.com\", \"orden\": 2, \"alias\": \"correo\" },\n    { \"nombre\": \"telefono\", \"valor\": \"3001234567\", \"orden\": 3, \"alias\": \"movil\" }\n  ],\n  \"archivos\": [\n    { \"nombreArchivo\": \"hoja_vida.txt\", \"nombreCampo\": \"cv\", \"contentType\": \"text/plain\", \"contenidoBase64\": \"SG9qYSBkZSB2aWRhIGRlIHBydWViYS4=\" }\n  ]\n}"
+            },
+            "description": "Crea un lead con campos y, opcionalmente, archivos en Base64. Responde 201 con { leadId }."
+          }
+        },
+        {
+          "name": "Listar leads (GET, filtro + paginación)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Leads?formulario={{formulario}}&page=1&pageSize=20",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "Leads" ],
+              "query": [
+                { "key": "formulario", "value": "{{formulario}}", "description": "Opcional: filtra por formulario. Quítalo para traer todos." },
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "20" }
+              ]
+            },
+            "description": "Lista paginada. Cada lead es un objeto dinámico (campos al nivel raíz). No incluye archivos."
+          }
+        },
+        {
+          "name": "Listar formularios (GET)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/Leads/formularios", "host": [ "{{baseUrl}}" ], "path": [ "api", "Leads", "formularios" ] },
+            "description": "Lista los nombres de formulario distintos (para poblar filtros/dropdowns)."
+          }
+        },
+        {
+          "name": "Exportar a Excel (GET export)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Leads/export?formulario={{formulario}}",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "Leads", "export" ],
+              "query": [
+                { "key": "formulario", "value": "{{formulario}}", "description": "Opcional: filtra por formulario. Quítalo para exportar todos." }
+              ]
+            },
+            "description": "Descarga un .xlsx con los leads (opcionalmente filtrados por formulario). En Postman usa 'Send and Download' para guardarlo."
+          }
+        },
+        {
+          "name": "Detalle lead (GET por id)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/Leads/{{leadId}}", "host": [ "{{baseUrl}}" ], "path": [ "api", "Leads", "{{leadId}}" ] },
+            "description": "Devuelve un lead como objeto dinámico. 404 si no existe."
+          }
+        },
+        {
+          "name": "Campos del lead (GET) - para edición fiel",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/Leads/{{leadId}}/campos", "host": [ "{{baseUrl}}" ], "path": [ "api", "Leads", "{{leadId}}", "campos" ] },
+            "description": "Devuelve los campos crudos del lead (nombre, valor, orden, alias) ordenados por orden. 404 si no existe."
+          }
+        },
+        {
+          "name": "Archivos del lead (GET)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const arr = pm.response.json();",
+                  "  if (Array.isArray(arr) && arr.length > 0) {",
+                  "    pm.collectionVariables.set('archivoId', arr[0].id);",
+                  "    console.log('archivoId guardado:', arr[0].id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/Leads/{{leadId}}/archivos", "host": [ "{{baseUrl}}" ], "path": [ "api", "Leads", "{{leadId}}", "archivos" ] },
+            "description": "Lista los archivos del lead (cada uno con su url de descarga). Guarda el primer archivoId."
+          }
+        },
+        {
+          "name": "Descargar archivo (GET)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/Leads/archivos/{{archivoId}}", "host": [ "{{baseUrl}}" ], "path": [ "api", "Leads", "archivos", "{{archivoId}}" ] },
+            "description": "Descarga el binario del archivo. En Postman usa 'Send and Download' para guardarlo."
+          }
+        },
+        {
+          "name": "Actualizar lead (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/Leads/{{leadId}}", "host": [ "{{baseUrl}}" ], "path": [ "api", "Leads", "{{leadId}}" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"formulario\": \"contacto\",\n  \"datos\": [\n    { \"nombre\": \"nombre\", \"valor\": \"Leiner G. (editado)\", \"orden\": 1, \"alias\": \"nombre_completo\" },\n    { \"nombre\": \"email\", \"valor\": \"nuevo@correo.com\", \"orden\": 2, \"alias\": \"correo\" },\n    { \"nombre\": \"ciudad\", \"valor\": \"Bogota\", \"orden\": 3, \"alias\": \"ciudad\" }\n  ]\n}"
+            },
+            "description": "Reemplaza formulario y campos. No modifica archivos. 200 con el lead actualizado, o 404."
+          }
+        },
+        {
+          "name": "Eliminar archivo (DELETE)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/Leads/archivos/{{archivoId}}", "host": [ "{{baseUrl}}" ], "path": [ "api", "Leads", "archivos", "{{archivoId}}" ] },
+            "description": "Elimina un archivo concreto (fila en BD + binario en disco). 204 / 404."
+          }
+        },
+        {
+          "name": "Eliminar lead (DELETE)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/Leads/{{leadId}}", "host": [ "{{baseUrl}}" ], "path": [ "api", "Leads", "{{leadId}}" ] },
+            "description": "Elimina el lead, sus archivos (cascada en BD) y los binarios en disco. 204 / 404."
+          }
+        }
+      ]
+    }
+  ]
+}

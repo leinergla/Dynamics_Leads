@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "ba7BxXfM+XE=",
+  "success": true,
+  "projectFilePath": "C:\\Repositorios\\dynamics-leads\\src\\Dynamics_Leads.Application\\Dynamics_Leads.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\leine\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.9\\microsoft.extensions.dependencyinjection.abstractions.10.0.9.nupkg.sha512",
+    "C:\\Users\\leine\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\10.0.9\\microsoft.extensions.logging.abstractions.10.0.9.nupkg.sha512"
+  ],
+  "logs": []
+}

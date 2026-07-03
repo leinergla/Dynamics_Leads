@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:16
+    container_name: dynamics_leads_db
+    environment:
+      POSTGRES_DB: dynamics_leads
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Script único de inicialización (tablas, datos iniciales y rutinas).
+      # Solo se ejecuta la primera vez, con el volumen de datos vacío.
+      - "./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dynamics_leads"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5433:5432" # acceso a la BD desde el host (5433 para no chocar con un Postgres local en 5432)
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dynamics_leads_api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      # Secretos/config por variables de entorno (ASP.NET Core mapea ':' -> '__').
+      Database__ConnectionString: "Host=db;Port=5432;Database=dynamics_leads;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres}"
+      Jwt__Key: "${JWT_KEY:-C5KYDTnIo68bmgHUU9wwdU+GUUJyX6ORGAPTg1lu3ZhoAvlSoV7jJZ8UsMsSyKww5lMFD9S9umGDfyJvlYZ24g==}"
+      # En local sobre HTTP la cookie no puede ser Secure; en prod con HTTPS, ponlo en true.
+      Jwt__CookieSecure: "${JWT_COOKIE_SECURE:-false}"
+      Seed__AdminUsername: "${ADMIN_USERNAME:-admin}"
+      Seed__AdminPassword: "${ADMIN_PASSWORD:-Admin123*}"
+    ports:
+      - "8080:8080"
+    volumes:
+      - archivos:/app/Archivos
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: dynamics_leads_web
+    depends_on:
+      - api
+    ports:
+      - "3000:80" # frontend en http://localhost:3000 (Nginx hace proxy de /api -> api:8080)
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  archivos:
