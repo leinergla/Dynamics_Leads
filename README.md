@@ -65,23 +65,25 @@ Si intentas acceder a una función para la que no tienes permiso, la aplicación
 
 ## 4. Consultar leads
 
-Entra en **Consultar Leads** (`/leads`). Verás una **tabla paginada** con los leads, ordenados del más reciente al más antiguo.
+Entra en **Consultar Leads** (`/leads`). Para ver leads debes **seleccionar primero un formulario** en el desplegable de *Formulario*; hasta entonces la tabla aparece vacía con el mensaje «Selecciona un formulario…».
 
-- **Filtrar por formulario**: usa el desplegable de *formulario* para ver solo los leads de un tipo de formulario concreto.
-- **Paginación**: navega entre páginas con los controles inferiores.
-- **Campos dinámicos**: cada formulario tiene sus propios campos, por lo que **las columnas pueden variar** según el tipo de lead.
+- **Seleccionar formulario** (obligatorio): elige un tipo de formulario para cargar sus leads, ordenados del más reciente al más antiguo.
+- **Paginación**: navega entre páginas con los controles **← Anterior / Siguiente →** (10 por página).
+- **Campos dinámicos**: cada formulario tiene sus propios campos, por lo que **las columnas pueden variar** según el tipo de lead. En la tabla se muestran los primeros campos de cada lead.
+- **Ver detalle**: usa el enlace **Ver detalle →** de cada fila.
 
-Desde esta pantalla puedes abrir el **detalle** de un lead, **crear** uno nuevo, **editar**, **eliminar** (si tienes permiso) y **exportar a Excel**.
+Desde esta pantalla puedes abrir el **detalle** de un lead, **crear** uno nuevo (**+ Nuevo lead**) y **exportar a Excel** (si tienes permiso).
 
 ---
 
 ## 5. Ver el detalle de un lead
 
-Haz clic en un lead para abrir su **detalle** (`/leads/:id`). Verás:
+Pulsa **Ver detalle →** en un lead para abrir su **detalle** (`/leads/:id`). Verás:
 
 - Los **datos del formulario** (todos los campos con su valor).
-- La **fecha de creación** y el **formulario** al que pertenece.
-- La lista de **archivos adjuntos**, con opción de **descargar** cada uno.
+- El **Lead ID**, la **fecha de creación** y el **formulario** al que pertenece.
+- La lista de **archivos adjuntos**, con opción de **Descargar** cada uno.
+- Botones de **Editar** y **Eliminar** (según tus permisos).
 
 ---
 
@@ -96,10 +98,11 @@ Requiere el permiso **crear** (`leads.create`).
    - **Valor** (el dato del lead).
    - **Alias** y **orden** (opcionales, para presentación).
    - Debe haber **al menos un campo**.
-4. Opcionalmente, **adjunta archivos** (ver [Archivos adjuntos](#9-archivos-adjuntos)).
-5. Pulsa **Guardar**.
+   - Puedes **agregar** más campos con **+ Agregar campo** o quitarlos con **✕**.
+4. Opcionalmente, **adjunta archivos** con el selector de archivos (permite varios; ver [Archivos adjuntos](#9-archivos-adjuntos)).
+5. Pulsa **Crear lead**.
 
-Al guardar, el lead queda registrado y se te redirige a la lista o al detalle.
+Al guardar, el lead queda registrado y se te redirige a su **detalle**.
 
 ---
 
@@ -110,9 +113,10 @@ Requiere el permiso **editar** (`leads.update`).
 1. Desde la lista o el detalle, pulsa **Editar** (`/leads/:id/editar`).
 2. El formulario se **precarga** con el nombre del formulario y todos los campos actuales (respetando su orden y alias).
 3. Modifica el **formulario** y/o los **campos** que necesites.
-4. Pulsa **Guardar**.
+4. En la sección **Archivos** puedes **eliminar** archivos existentes del lead (con confirmación). **No se pueden añadir** archivos nuevos al editar: para adjuntar más archivos hay que crear un lead desde cero.
+5. Pulsa **Guardar cambios**.
 
-> **Importante**: la edición reemplaza el **nombre del formulario y los campos**. **No modifica los archivos adjuntos**; estos se gestionan por separado (añadir al crear, o eliminar desde el detalle).
+> **Importante**: la edición reemplaza el **nombre del formulario y los campos**. Sobre los archivos, la edición **solo permite eliminarlos**, no añadir nuevos.
 
 ---
 
@@ -129,8 +133,9 @@ Al eliminar un lead se borran también **todos sus archivos adjuntos**. Esta acc
 
 ## 9. Archivos adjuntos
 
-- **Al crear** un lead puedes adjuntar uno o varios archivos (por ejemplo, un CV o un documento).
-- **En el detalle** del lead puedes **descargar** cada archivo y, si tienes permiso, **eliminar** un archivo individual.
+- **Al crear** un lead puedes adjuntar uno o varios archivos (por ejemplo, un CV o un documento) con el selector de archivos.
+- **En el detalle** del lead puedes **descargar** cada archivo con el botón **Descargar**.
+- **Al editar** un lead puedes **eliminar** archivos existentes (sección Archivos de la pantalla de edición). Para **añadir** archivos nuevos a un lead ya creado no hay opción: se crea un lead nuevo.
 - Puede haber **límites** de tamaño y de tipo/extensión de archivo, configurados por el administrador. Si un archivo supera el tamaño permitido o no tiene una extensión aceptada, la aplicación lo rechazará con un mensaje de error.
 
 ---
@@ -139,11 +144,11 @@ Al eliminar un lead se borran también **todos sus archivos adjuntos**. Esta acc
 
 Requiere el permiso **consultar** (`leads.read`).
 
-1. En **Consultar Leads**, aplica opcionalmente el filtro por **formulario**.
-2. Pulsa **Exportar a Excel**.
-3. El navegador descargará un archivo `.xlsx` con los leads (todos, o solo los del formulario filtrado).
+1. En **Consultar Leads**, **selecciona un formulario** (el botón de exportar permanece deshabilitado hasta que haya un formulario seleccionado con leads).
+2. Pulsa **↓ Exportar a Excel**.
+3. El navegador descargará un archivo `.xlsx` con los leads de ese formulario.
 
-El nombre del archivo sigue el patrón `leads_<formulario|todos>_<fecha>.xlsx`.
+El nombre del archivo sigue el patrón `leads_<formulario>_<fecha>.xlsx`.
 
 ---
 
@@ -151,18 +156,20 @@ El nombre del archivo sigue el patrón `leads_<formulario|todos>_<fecha>.xlsx`.
 
 Requiere el permiso **gestionar usuarios** (`usuarios.manage`, solo **Administrador** por defecto). Menú **Usuarios** (`/usuarios`).
 
+La tabla muestra **Usuario, Email, Rol y Estado** (Activo/Inactivo), con acciones **Editar**, **Contraseña** y **Eliminar** por fila.
+
 - **Listar usuarios**: tabla **paginada** (10 por página), ordenada por nombre de usuario.
-- **Crear usuario** (`/usuarios/nuevo`): define **usuario**, **contraseña** (mínimo 6 caracteres), **rol** y si está **activo**.
-- **Editar usuario** (`/usuarios/:id/editar`): cambia el **email/rol/estado**. El **nombre de usuario no se modifica**, y la contraseña **no** se cambia desde aquí.
-- **Restablecer contraseña de otro usuario** (`/usuarios/:id/password`): establece una nueva contraseña (mínimo 6 caracteres) para **otro** usuario.
+- **Crear usuario** (**+ Nuevo usuario**, `/usuarios/nuevo`): define **usuario**, **email** (opcional), **contraseña** (mínimo 6 caracteres) y **rol**. (El estado *activo* solo se ajusta al editar.)
+- **Editar usuario** (enlace **Editar**, `/usuarios/:id/editar`): cambia el **email/rol/estado**. El **nombre de usuario no se modifica**, y la contraseña **no** se cambia desde aquí.
+- **Restablecer contraseña de otro usuario** (enlace **Contraseña**, `/usuarios/:id/password`): establece una nueva contraseña (mínimo 6 caracteres) para **otro** usuario. El enlace **solo aparece** para el rol Administrador y sobre usuarios distintos al propio.
   - **No puedes cambiar tu propia contraseña** por esta vía; la aplicación lo impedirá.
-- **Eliminar usuario**: quita el acceso de ese usuario.
+- **Eliminar usuario** (enlace **Eliminar**, con confirmación): quita el acceso de ese usuario.
 
 ---
 
 ## 12. Cerrar sesión
 
-Pulsa **Cerrar sesión** en el menú. Se borrará tu sesión y volverás a la pantalla de inicio de sesión.
+Pulsa **Salir** en la barra superior (junto a tu nombre de usuario). Se borrará tu sesión y volverás a la pantalla de inicio de sesión.
 
 ---
 
