@@ -83,7 +83,7 @@ export default function ConsultarLeads() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-slate-900">Consultar Leads</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Consultar Leads</h1>
             {hasPermiso('leads.create') && (
               <Link
                 to="/leads/nuevo"
@@ -96,12 +96,12 @@ export default function ConsultarLeads() {
               type="button"
               onClick={exportarExcel}
               disabled={!formulario || exportando || (data?.total ?? 0) === 0}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50 disabled:cursor-not-allowed disabled:border-slate-300 disabled:text-slate-400 disabled:hover:bg-transparent"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50 disabled:cursor-not-allowed disabled:border-slate-300 disabled:text-slate-400 disabled:hover:bg-transparent dark:text-emerald-400 dark:hover:bg-emerald-900/20 dark:disabled:border-slate-700 dark:disabled:text-slate-600"
             >
               {exportando ? 'Exportando…' : '↓ Exportar a Excel'}
             </button>
           </div>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {!formulario
               ? 'Selecciona un formulario para ver sus leads'
               : data
@@ -111,11 +111,11 @@ export default function ConsultarLeads() {
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-500">Formulario</label>
+          <label className="block text-xs font-medium text-slate-500 dark:text-slate-400">Formulario</label>
           <select
             value={formulario}
             onChange={cambiarFormulario}
-            className="mt-1 w-64 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="mt-1 w-64 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
           >
             <option value="">Seleccione un formulario…</option>
             {formularios.map((f) => (
@@ -128,33 +128,33 @@ export default function ConsultarLeads() {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
           {error}
         </div>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <table className="min-w-full divide-y divide-slate-200">
-          <thead className="bg-slate-50">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+          <thead className="bg-slate-50 dark:bg-slate-900/40">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                 Formulario
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                 Campos
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                 Fecha
               </th>
-              <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                 Acciones
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-700/60">
             {loading && (
               <tr>
-                <td colSpan={4} className="px-4 py-10 text-center text-slate-400">
+                <td colSpan={4} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                   Cargando…
                 </td>
               </tr>
@@ -162,7 +162,7 @@ export default function ConsultarLeads() {
 
             {!loading && items.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-4 py-10 text-center text-slate-400">
+                <td colSpan={4} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
                   {!formulario
                     ? 'Selecciona un formulario en el desplegable para ver sus leads.'
                     : 'No hay leads para este formulario.'}
@@ -174,9 +174,9 @@ export default function ConsultarLeads() {
               items.map((lead) => {
                 const campos = camposDinamicos(lead)
                 return (
-                  <tr key={lead.leadId} className="hover:bg-slate-50">
+                  <tr key={lead.leadId} className="hover:bg-slate-50 dark:hover:bg-slate-700/40">
                     <td className="px-4 py-3">
-                      <span className="inline-flex rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-700">
+                      <span className="inline-flex rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">
                         {lead.formulario}
                       </span>
                     </td>
@@ -185,28 +185,28 @@ export default function ConsultarLeads() {
                         {campos.slice(0, 4).map(([k, v]) => (
                           <span
                             key={k}
-                            className="rounded-md bg-slate-100 px-2 py-0.5 text-xs text-slate-600"
+                            className="rounded-md bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:bg-slate-700 dark:text-slate-300"
                           >
-                            <span className="font-medium text-slate-500">{k}:</span> {String(v)}
+                            <span className="font-medium text-slate-500 dark:text-slate-400">{k}:</span> {String(v)}
                           </span>
                         ))}
                         {campos.length > 4 && (
-                          <span className="text-xs text-slate-400">
+                          <span className="text-xs text-slate-400 dark:text-slate-500">
                             +{campos.length - 4} más
                           </span>
                         )}
                         {campos.length === 0 && (
-                          <span className="text-xs text-slate-400">sin campos</span>
+                          <span className="text-xs text-slate-400 dark:text-slate-500">sin campos</span>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-slate-500">
+                    <td className="px-4 py-3 text-sm text-slate-500 dark:text-slate-400">
                       {formatFecha(lead.fechaCreacion)}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <Link
                         to={`/leads/${lead.leadId}`}
-                        className="text-sm font-medium text-indigo-600 hover:text-indigo-800"
+                        className="text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
                       >
                         Ver detalle →
                       </Link>
@@ -223,17 +223,17 @@ export default function ConsultarLeads() {
           <button
             disabled={page <= 1}
             onClick={() => setPage((p) => p - 1)}
-            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
           >
             ← Anterior
           </button>
-          <span className="text-sm text-slate-500">
+          <span className="text-sm text-slate-500 dark:text-slate-400">
             Página {page} de {totalPages}
           </span>
           <button
             disabled={page >= totalPages}
             onClick={() => setPage((p) => p + 1)}
-            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
           >
             Siguiente →
           </button>

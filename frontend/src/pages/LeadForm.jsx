@@ -120,57 +120,57 @@ export default function LeadForm() {
     }
   }
 
-  if (loading) return <p className="text-slate-400">Cargando…</p>
+  if (loading) return <p className="text-slate-400 dark:text-slate-500">Cargando…</p>
 
   return (
     <div className="space-y-6">
       <div>
         <Link
           to={esEdicion ? `/leads/${id}` : '/leads'}
-          className="text-sm font-medium text-indigo-600 hover:text-indigo-800"
+          className="text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
         >
           ← {esEdicion ? 'Volver al detalle' : 'Volver a la lista'}
         </Link>
       </div>
 
-      <h1 className="text-2xl font-bold text-slate-900">
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
         {esEdicion ? 'Editar Lead' : 'Nuevo Lead'}
       </h1>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
           {error}
         </div>
       )}
 
       <form onSubmit={onSubmit} className="space-y-6">
         {/* Formulario */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <label className="block text-sm font-medium text-slate-700">Formulario</label>
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Formulario</label>
           <input
             value={formulario}
             onChange={(e) => setFormulario(e.target.value)}
             placeholder="p. ej. contacto"
             maxLength={255}
-            className="mt-1 w-full max-w-md rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="mt-1 w-full max-w-md rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
           />
         </div>
 
         {/* Campos */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-700">Campos</h2>
+            <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Campos</h2>
             <button
               type="button"
               onClick={agregarCampo}
-              className="rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-200"
+              className="rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"
             >
               + Agregar campo
             </button>
           </div>
 
           <div className="space-y-2">
-            <div className="hidden grid-cols-[1fr_1fr_5rem_1fr_2.5rem] gap-2 px-1 text-xs font-medium text-slate-400 sm:grid">
+            <div className="hidden grid-cols-[1fr_1fr_5rem_1fr_2.5rem] gap-2 px-1 text-xs font-medium text-slate-400 sm:grid dark:text-slate-500">
               <span>Nombre</span>
               <span>Valor</span>
               <span>Orden</span>
@@ -186,32 +186,32 @@ export default function LeadForm() {
                   value={c.nombre}
                   onChange={(e) => actualizarCampo(idx, 'nombre', e.target.value)}
                   placeholder="nombre"
-                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
                 />
                 <input
                   value={c.valor}
                   onChange={(e) => actualizarCampo(idx, 'valor', e.target.value)}
                   placeholder="valor"
-                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
                 />
                 <input
                   type="number"
                   value={c.orden}
                   onChange={(e) => actualizarCampo(idx, 'orden', e.target.value)}
-                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
                 />
                 <input
                   value={c.alias}
                   onChange={(e) => actualizarCampo(idx, 'alias', e.target.value)}
                   placeholder="alias"
-                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
                 />
                 <button
                   type="button"
                   onClick={() => quitarCampo(idx)}
                   disabled={campos.length === 1}
                   title="Quitar campo"
-                  className="rounded-lg border border-slate-300 text-slate-500 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="rounded-lg border border-slate-300 text-slate-500 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                 >
                   ✕
                 </button>
@@ -221,22 +221,22 @@ export default function LeadForm() {
         </div>
 
         {/* Archivos */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="mb-3 text-sm font-semibold text-slate-700">Archivos</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+          <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">Archivos</h2>
 
           {esEdicion ? (
             <>
               {archivosExistentes.length === 0 ? (
-                <p className="text-sm text-slate-400">Este lead no tiene archivos.</p>
+                <p className="text-sm text-slate-400 dark:text-slate-500">Este lead no tiene archivos.</p>
               ) : (
-                <ul className="divide-y divide-slate-100">
+                <ul className="divide-y divide-slate-100 dark:divide-slate-700/60">
                   {archivosExistentes.map((a) => (
                     <li key={a.id} className="flex items-center justify-between gap-4 py-2">
-                      <span className="truncate text-sm text-slate-700">{a.nombreArchivo}</span>
+                      <span className="truncate text-sm text-slate-700 dark:text-slate-200">{a.nombreArchivo}</span>
                       <button
                         type="button"
                         onClick={() => borrarArchivoExistente(a.id)}
-                        className="shrink-0 rounded-lg border border-red-200 px-3 py-1 text-sm font-medium text-red-600 transition hover:bg-red-50"
+                        className="shrink-0 rounded-lg border border-red-200 px-3 py-1 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
                       >
                         Eliminar
                       </button>
@@ -244,7 +244,7 @@ export default function LeadForm() {
                   ))}
                 </ul>
               )}
-              <p className="mt-3 text-xs text-slate-400">
+              <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
                 Para agregar archivos nuevos, crea el lead desde cero (la edición no añade archivos).
               </p>
             </>
@@ -254,12 +254,12 @@ export default function LeadForm() {
                 type="file"
                 multiple
                 onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
-                className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:file:bg-indigo-100"
+                className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:file:bg-indigo-100 dark:text-slate-300 dark:file:bg-indigo-500/20 dark:file:text-indigo-300 dark:hover:file:bg-indigo-500/30"
               />
               {files.length > 0 && (
-                <ul className="mt-3 space-y-1 text-sm text-slate-600">
+                <ul className="mt-3 space-y-1 text-sm text-slate-600 dark:text-slate-300">
                   {files.map((f, i) => (
-                    <li key={i}>• {f.name} <span className="text-slate-400">({f.type || 'desconocido'})</span></li>
+                    <li key={i}>• {f.name} <span className="text-slate-400 dark:text-slate-500">({f.type || 'desconocido'})</span></li>
                   ))}
                 </ul>
               )}
@@ -277,7 +277,7 @@ export default function LeadForm() {
           </button>
           <Link
             to={esEdicion ? `/leads/${id}` : '/leads'}
-            className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
+            className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
           >
             Cancelar
           </Link>

@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import ThemeToggle from './ThemeToggle'
 
 const linkBase = 'px-4 py-2 rounded-lg text-sm font-medium transition-colors'
 const linkClass = ({ isActive }) =>
@@ -17,7 +18,7 @@ export default function Layout() {
   }
 
   return (
-    <div className="min-h-full bg-slate-50 text-slate-800">
+    <div className="min-h-full bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200">
       <header className="bg-gradient-to-r from-indigo-600 to-violet-600 shadow-lg">
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2 text-white">
@@ -48,6 +49,7 @@ export default function Layout() {
               {user?.username}
               <span className="ml-1 text-indigo-200">({user?.rol})</span>
             </span>
+            <ThemeToggle variant="header" />
             <button
               onClick={onLogout}
               className="rounded-lg bg-white/15 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/25"
@@ -62,7 +64,7 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      <footer className="mx-auto max-w-6xl px-6 py-8 text-center text-sm text-slate-400">
+      <footer className="mx-auto max-w-6xl px-6 py-8 text-center text-sm text-slate-400 dark:text-slate-500">
         Dynamics Leads API · Frontend de demostración
       </footer>
     </div>
