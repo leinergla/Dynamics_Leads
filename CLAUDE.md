@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # Dynamics Leads
 
 Solución para registrar y consultar leads (con campos y archivos). Consta de:
@@ -391,7 +395,16 @@ dotnet run --project src/Dynamics_Leads.Api/Dynamics_Leads.Api.csproj
 # Conéctate a la BD 'postgres'; el script crea 'dynamics_leads' si no existe.
 # Es idempotente: puede reejecutarse sin error.
 psql -h localhost -U postgres -d postgres -f db/init.sql
+
+# Frontend (desde frontend/)
+npm run dev      # dev server con proxy /api -> localhost:5137
+npm run build    # build de producción en dist/
+npm run lint     # ESLint (flat config en frontend/eslint.config.js)
 ```
+
+> **API en desarrollo**: `dotnet run` levanta la API en `http://localhost:5137` (perfil `http` en `launchSettings.json`), que es el destino del proxy de Vite. El perfil `https` añade `https://localhost:7233`.
+>
+> **No hay suite de pruebas automatizadas**: la solución (`dynamics_leads.slnx`) contiene solo los 4 proyectos de capas (Domain, Application, Infrastructure, Api) y no existe proyecto de tests ni archivos de test. No busques un runner de tests; para verificar cambios usa `dotnet build`, ejecuta la API y/o la colección de Postman.
 
 ## Docker (API)
 

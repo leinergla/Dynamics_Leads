@@ -1,7 +1,20 @@
 @import "tailwindcss";
 
+/* Habilita el modo oscuro por clase (`.dark` en <html>), en vez de por
+   `prefers-color-scheme`. Así el toggle puede forzar el tema manualmente. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 html,
 body,
 #root {
   height: 100%;
+}
+
+/* Fondo base del "gutter" y ajuste de controles nativos (scrollbars, inputs). */
+:root {
+  color-scheme: light;
+}
+:root.dark {
+  color-scheme: dark;
+  background-color: #0f172a; /* slate-900 */
 }

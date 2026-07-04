@@ -40,10 +40,10 @@ export default function Inicio() {
         {features.map((f) => (
           <div
             key={f.titulo}
-            className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+            className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800"
           >
-            <h3 className="text-lg font-semibold text-slate-900">{f.titulo}</h3>
-            <p className="mt-2 text-sm text-slate-500">{f.desc}</p>
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{f.titulo}</h3>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{f.desc}</p>
           </div>
         ))}
       </section>

@@ -63,11 +63,11 @@ export default function CambiarPassword() {
   }
 
   const inputClass =
-    'mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500'
+    'mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100'
 
   const volver = (
     <div>
-      <Link to="/usuarios" className="text-sm font-medium text-indigo-600 hover:text-indigo-800">
+      <Link to="/usuarios" className="text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
         ← Volver a usuarios
       </Link>
     </div>
@@ -78,8 +78,8 @@ export default function CambiarPassword() {
     return (
       <div className="space-y-6">
         {volver}
-        <h1 className="text-2xl font-bold text-slate-900">Cambiar contraseña</h1>
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Cambiar contraseña</h1>
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
           Solo un Administrador puede cambiar la contraseña de un usuario.
         </div>
       </div>
@@ -90,36 +90,36 @@ export default function CambiarPassword() {
     return (
       <div className="space-y-6">
         {volver}
-        <h1 className="text-2xl font-bold text-slate-900">Cambiar contraseña</h1>
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Cambiar contraseña</h1>
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
           No puedes cambiar tu propia contraseña por esta vía; solo la de otros usuarios.
         </div>
       </div>
     )
   }
 
-  if (loading) return <p className="text-slate-400">Cargando…</p>
+  if (loading) return <p className="text-slate-400 dark:text-slate-500">Cargando…</p>
 
   return (
     <div className="space-y-6">
       {volver}
 
-      <h1 className="text-2xl font-bold text-slate-900">Cambiar contraseña</h1>
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Cambiar contraseña</h1>
       {usuario && (
-        <p className="text-sm text-slate-500">
-          Usuario: <span className="font-medium text-slate-700">{usuario.username}</span>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Usuario: <span className="font-medium text-slate-700 dark:text-slate-200">{usuario.username}</span>
         </p>
       )}
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
           {error}
         </div>
       )}
 
-      <form onSubmit={onSubmit} className="max-w-lg space-y-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <form onSubmit={onSubmit} className="max-w-lg space-y-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
         <div>
-          <label className="block text-sm font-medium text-slate-700">Nueva contraseña</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Nueva contraseña</label>
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -132,7 +132,7 @@ export default function CambiarPassword() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700">Confirmar contraseña</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Confirmar contraseña</label>
           <input
             value={confirmacion}
             onChange={(e) => setConfirmacion(e.target.value)}
@@ -154,7 +154,7 @@ export default function CambiarPassword() {
           </button>
           <Link
             to="/usuarios"
-            className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
+            className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
           >
             Cancelar
           </Link>
