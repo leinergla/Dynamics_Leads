@@ -14,13 +14,14 @@ Este documento es el **manual de usuario**. Para la descripción técnica (arqui
 4. [Consultar leads](#4-consultar-leads)
 5. [Ver el detalle de un lead](#5-ver-el-detalle-de-un-lead)
 6. [Crear un lead](#6-crear-un-lead)
-7. [Editar un lead](#7-editar-un-lead)
-8. [Eliminar un lead](#8-eliminar-un-lead)
-9. [Archivos adjuntos](#9-archivos-adjuntos)
-10. [Exportar a Excel](#10-exportar-a-excel)
-11. [Gestión de usuarios](#11-gestión-de-usuarios)
-12. [Cerrar sesión](#12-cerrar-sesión)
-13. [Preguntas frecuentes](#13-preguntas-frecuentes)
+7. [Registrar leads desde formularios externos (CMS / landing page)](#7-registrar-leads-desde-formularios-externos-cms--landing-page)
+8. [Editar un lead](#8-editar-un-lead)
+9. [Eliminar un lead](#9-eliminar-un-lead)
+10. [Archivos adjuntos](#10-archivos-adjuntos)
+11. [Exportar a Excel](#11-exportar-a-excel)
+12. [Gestión de usuarios](#12-gestión-de-usuarios)
+13. [Cerrar sesión](#13-cerrar-sesión)
+14. [Preguntas frecuentes](#14-preguntas-frecuentes)
 
 ---
 
@@ -31,7 +32,7 @@ Abre la dirección de la aplicación en tu navegador. Según cómo esté despleg
 - **Con Docker (recomendado)**: `http://localhost:3000`
 - **En desarrollo (frontend)**: `http://localhost:5173`
 
-Si no tienes usuario, pídeselo a un **Administrador** (ver [Gestión de usuarios](#11-gestión-de-usuarios)).
+Si no tienes usuario, pídeselo a un **Administrador** (ver [Gestión de usuarios](#12-gestión-de-usuarios)).
 
 > ¿Quieres levantar la aplicación tú mismo? Los pasos de instalación y ejecución están en [CLAUDE.md](./CLAUDE.md).
 
@@ -52,10 +53,10 @@ La sesión se mantiene de forma segura mediante una cookie; no necesitas volver 
 
 Cada usuario tiene **un rol**, y cada rol otorga una serie de **permisos**. La interfaz **oculta o muestra** botones y menús según lo que puedas hacer.
 
-| Rol            | Puede hacer                                                        |
-|----------------|-------------------------------------------------------------------|
-| **Administrador** | Todo: consultar, crear, editar y eliminar leads, exportar y **gestionar usuarios**. |
-| **Editor**     | Consultar, crear y editar leads (y exportar). **No** puede eliminar leads ni gestionar usuarios. |
+| Rol               | Puede hacer                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------------ |
+| **Administrador** | Todo: consultar, crear, editar y eliminar leads, exportar y **gestionar usuarios**.              |
+| **Editor**        | Consultar, crear y editar leads (y exportar). **No** puede eliminar leads ni gestionar usuarios. |
 
 Permisos individuales: `leads.read` (consultar), `leads.create` (crear), `leads.update` (editar), `leads.delete` (eliminar), `usuarios.manage` (gestionar usuarios).
 
@@ -65,7 +66,7 @@ Si intentas acceder a una función para la que no tienes permiso, la aplicación
 
 ## 4. Consultar leads
 
-Entra en **Consultar Leads** (`/leads`). Para ver leads debes **seleccionar primero un formulario** en el desplegable de *Formulario*; hasta entonces la tabla aparece vacía con el mensaje «Selecciona un formulario…».
+Entra en **Consultar Leads** (`/leads`). Para ver leads debes **seleccionar primero un formulario** en el desplegable de _Formulario_; hasta entonces la tabla aparece vacía con el mensaje «Selecciona un formulario…».
 
 - **Seleccionar formulario** (obligatorio): elige un tipo de formulario para cargar sus leads, ordenados del más reciente al más antiguo.
 - **Paginación**: navega entre páginas con los controles **← Anterior / Siguiente →** (10 por página).
@@ -99,14 +100,32 @@ Requiere el permiso **crear** (`leads.create`).
    - **Alias** y **orden** (opcionales, para presentación).
    - Debe haber **al menos un campo**.
    - Puedes **agregar** más campos con **+ Agregar campo** o quitarlos con **✕**.
-4. Opcionalmente, **adjunta archivos** con el selector de archivos (permite varios; ver [Archivos adjuntos](#9-archivos-adjuntos)).
+4. Opcionalmente, **adjunta archivos** con el selector de archivos (permite varios; ver [Archivos adjuntos](#10-archivos-adjuntos)).
 5. Pulsa **Crear lead**.
 
 Al guardar, el lead queda registrado y se te redirige a su **detalle**.
 
 ---
 
-## 7. Editar un lead
+## 7. Registrar leads desde formularios externos (CMS / landing page)
+
+Además de crearlos manualmente desde la aplicación, los leads pueden **registrarse automáticamente a través de la API**. Esto permite conectar **formularios de un CMS (WordPress, Umbraco, etc.), una landing page o cualquier sitio web** para que, cuando un visitante los envíe, el lead quede guardado directamente en Dynamics Leads.
+
+- El sitio externo envía los datos del formulario (y, opcionalmente, archivos adjuntos) al endpoint de la API `POST /api/Leads`.
+- Cada envío se registra como un lead nuevo, con el **formulario** y los **campos** que se hayan configurado; después aparece en **Consultar Leads** ([sección 4](#4-consultar-leads)) como cualquier otro.
+- La integración debe estar **autenticada** y contar con el permiso **crear** (`leads.create`).
+
+**Casos de uso típicos:**
+
+- Un formulario de **contacto** en tu página web.
+- Una **landing page** de campaña que captura registros o solicitudes.
+- Formularios de un **CMS** (WordPress, Webflow, etc.) que envían cada envío como un lead.
+
+> Los detalles técnicos de la integración (formato del `POST`, autenticación, estructura de campos y archivos) están en **[CLAUDE.md](./CLAUDE.md)**. Coordina con quien administre la API para conectar tu formulario.
+
+---
+
+## 8. Editar un lead
 
 Requiere el permiso **editar** (`leads.update`).
 
@@ -120,7 +139,7 @@ Requiere el permiso **editar** (`leads.update`).
 
 ---
 
-## 8. Eliminar un lead
+## 9. Eliminar un lead
 
 Requiere el permiso **eliminar** (`leads.delete`, solo **Administrador** por defecto).
 
@@ -131,7 +150,7 @@ Al eliminar un lead se borran también **todos sus archivos adjuntos**. Esta acc
 
 ---
 
-## 9. Archivos adjuntos
+## 10. Archivos adjuntos
 
 - **Al crear** un lead puedes adjuntar uno o varios archivos (por ejemplo, un CV o un documento) con el selector de archivos.
 - **En el detalle** del lead puedes **descargar** cada archivo con el botón **Descargar**.
@@ -140,7 +159,7 @@ Al eliminar un lead se borran también **todos sus archivos adjuntos**. Esta acc
 
 ---
 
-## 10. Exportar a Excel
+## 11. Exportar a Excel
 
 Requiere el permiso **consultar** (`leads.read`).
 
@@ -152,14 +171,14 @@ El nombre del archivo sigue el patrón `leads_<formulario>_<fecha>.xlsx`.
 
 ---
 
-## 11. Gestión de usuarios
+## 12. Gestión de usuarios
 
 Requiere el permiso **gestionar usuarios** (`usuarios.manage`, solo **Administrador** por defecto). Menú **Usuarios** (`/usuarios`).
 
 La tabla muestra **Usuario, Email, Rol y Estado** (Activo/Inactivo), con acciones **Editar**, **Contraseña** y **Eliminar** por fila.
 
 - **Listar usuarios**: tabla **paginada** (10 por página), ordenada por nombre de usuario.
-- **Crear usuario** (**+ Nuevo usuario**, `/usuarios/nuevo`): define **usuario**, **email** (opcional), **contraseña** (mínimo 6 caracteres) y **rol**. (El estado *activo* solo se ajusta al editar.)
+- **Crear usuario** (**+ Nuevo usuario**, `/usuarios/nuevo`): define **usuario**, **email** (opcional), **contraseña** (mínimo 6 caracteres) y **rol**. (El estado _activo_ solo se ajusta al editar.)
 - **Editar usuario** (enlace **Editar**, `/usuarios/:id/editar`): cambia el **email/rol/estado**. El **nombre de usuario no se modifica**, y la contraseña **no** se cambia desde aquí.
 - **Restablecer contraseña de otro usuario** (enlace **Contraseña**, `/usuarios/:id/password`): establece una nueva contraseña (mínimo 6 caracteres) para **otro** usuario. El enlace **solo aparece** para el rol Administrador y sobre usuarios distintos al propio.
   - **No puedes cambiar tu propia contraseña** por esta vía; la aplicación lo impedirá.
@@ -167,13 +186,13 @@ La tabla muestra **Usuario, Email, Rol y Estado** (Activo/Inactivo), con accione
 
 ---
 
-## 12. Cerrar sesión
+## 13. Cerrar sesión
 
 Pulsa **Salir** en la barra superior (junto a tu nombre de usuario). Se borrará tu sesión y volverás a la pantalla de inicio de sesión.
 
 ---
 
-## 13. Preguntas frecuentes
+## 14. Preguntas frecuentes
 
 **No veo el botón de crear / editar / eliminar / usuarios.**
 Tu rol no tiene ese permiso. Pide a un Administrador que revise tu rol (ver [Roles y permisos](#3-roles-y-permisos)).
@@ -189,6 +208,9 @@ Puede superar el **tamaño máximo** permitido o tener una **extensión** no ace
 
 **Olvidé mi contraseña.**
 Solo un **Administrador** puede restablecer la contraseña de otro usuario desde **Usuarios**.
+
+**¿Puedo conectar el formulario de mi web o landing page para que cree leads?**
+Sí. Los leads pueden registrarse automáticamente vía la API desde un CMS, una landing page o cualquier sitio web (ver [Registrar leads desde formularios externos](#7-registrar-leads-desde-formularios-externos-cms--landing-page)). La configuración técnica está en [CLAUDE.md](./CLAUDE.md).
 
 ---
 
